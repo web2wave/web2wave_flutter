@@ -1,0 +1,1 @@
+class Web2Wave {}
