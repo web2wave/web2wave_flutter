@@ -42,21 +42,21 @@ Before using Web2Wave, you need to configure API key:
 
 ```dart
   // Fetch subscriptions
-  final subscriptions = await Web2Wave.shared.fetchSubscriptions(userId: 'userID');
+  final subscriptions = await Web2Wave.shared.fetchSubscriptions(web2waveUserId: 'userID');
 
   // Check if user has an active subscription
-  final isActive = await Web2Wave.shared.hasActiveSubscription(userId: 'userID');
+  final isActive = await Web2Wave.shared.hasActiveSubscription(web2waveUserId: 'userID');
 ```
 
 ### Managing User Properties
 
 ```dart
   // Fetch user properties
-  final properties = await Web2Wave.shared.fetchUserProperties(userId: 'userID');
+  final properties = await Web2Wave.shared.fetchUserProperties(web2waveUserId: 'userID');
 
   // Update a user property
   final result = await Web2Wave.shared.updateUserProperty(
-      userId: userID,
+      web2waveUserId: userID,
       property: 'preferredTheme',
       value: 'dark');
 
@@ -73,7 +73,7 @@ Before using Web2Wave, you need to configure API key:
 ```dart
   // Save Adapty profileID
   final resultAdapty = await Web2Wave.shared.setAdaptyProfileID(
-      userId: userID,
+      web2waveUserId: userID,
       adaptyProfileId: "{adaptyProfileID}");
 
   switch (resultAdapty.isSuccess) {
@@ -86,7 +86,7 @@ Before using Web2Wave, you need to configure API key:
 
   // Save Revenue Cat profileID
   final resultRevcat = await Web2Wave.shared.setRevenuecatProfileID(
-      userId: userID, revenuecatProfileId: "{revenueCatProfileID}");
+      web2waveUserId: userID, revenuecatProfileId: "{revenueCatProfileID}");
 
   switch (resultRevcat.isSuccess) {
     case true:
@@ -98,7 +98,7 @@ Before using Web2Wave, you need to configure API key:
 
   // Save Qonversion profileID
   final resultQonversion = await Web2Wave.shared.setQonversionProfileID(
-      userId: userID,
+      web2waveUserId: userID,
       qonverionProfileId: "{qonversionProfileID}");
 
   switch (resultQonversion.isSuccess) {
@@ -118,31 +118,31 @@ The singleton instance of the Web2Wave client.
 
 ### Methods
 
-#### `Future<List<dynamic>?> fetchSubscriptions({required String userId})`
+#### `Future<List<dynamic>?> fetchSubscriptions({required String web2waveUserId})`
 
 Fetches the subscription status for a given user ID.
 
-#### `Future<bool> hasActiveSubscription({required String userId})`
+#### `Future<bool> hasActiveSubscription({required String web2waveUserId})`
 
 Checks if the user has an active subscription (including trial status).
 
-#### `Future<Map<String, String>?> fetchUserProperties({required String userId})`
+#### `Future<Map<String, String>?> fetchUserProperties({required String web2waveUserId})`
 
 Retrieves all properties associated with a user.
 
-#### `Future<Web2WaveResponse> updateUserProperty({required String userId, required String property, required String value})`
+#### `Future<Web2WaveResponse> updateUserProperty({required String web2waveUserId, required String property, required String value})`
 
 Updates a specific property for a user.
 
-#### `Future<Web2WaveResponse> setRevenuecatProfileID({required String userId, required String revenuecatProfileId})`
+#### `Future<Web2WaveResponse> setRevenuecatProfileID({required String web2waveUserId, required String revenuecatProfileId})`
 
 Set Revenuecat profileID
 
-#### `Future<Web2WaveResponse> setAdaptyProfileID({required String userId, required String adaptyProfileId})`
+#### `Future<Web2WaveResponse> setAdaptyProfileID({required String web2waveUserId, required String adaptyProfileId})`
 
 Set Adapty profileID
 
-#### `Future<Web2WaveResponse> setQonversionProfileID({required String userId, required String qonverionProfileId})`
+#### `Future<Web2WaveResponse> setQonversionProfileID({required String web2waveUserId, required String qonverionProfileId})`
 
 Set Qonversion ProfileID
 

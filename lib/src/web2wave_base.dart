@@ -26,10 +26,12 @@ class Web2Wave {
     this.apiKey = apiKey;
   }
 
-  Future<Map<String, dynamic>?> _fetchSubscriptionStatus(String userId) async {
+  Future<Map<String, dynamic>?> _fetchSubscriptionStatus(
+      String web2waveUserId) async {
     assert(apiKey != null, 'You must initialize apiKey before use');
 
-    final uri = Uri.parse('$_baseURL/api/user/subscriptions?user=$userId');
+    final uri =
+        Uri.parse('$_baseURL/api/user/subscriptions?user=$web2waveUserId');
     final response = await http.get(uri, headers: _headers);
 
     if (response.statusCode == 200) {
@@ -38,8 +40,8 @@ class Web2Wave {
     return null;
   }
 
-  Future<bool> hasActiveSubscription({required String userId}) async {
-    final subscriptionStatus = await _fetchSubscriptionStatus(userId);
+  Future<bool> hasActiveSubscription({required String web2waveUserId}) async {
+    final subscriptionStatus = await _fetchSubscriptionStatus(web2waveUserId);
     if (subscriptionStatus == null) return false;
 
     final subscriptions = subscriptionStatus['subscription'] as List<dynamic>?;
@@ -48,16 +50,17 @@ class Web2Wave {
         false;
   }
 
-  Future<List<dynamic>?> fetchSubscriptions({required String userId}) async {
-    final response = await _fetchSubscriptionStatus(userId);
+  Future<List<dynamic>?> fetchSubscriptions(
+      {required String web2waveUserId}) async {
+    final response = await _fetchSubscriptionStatus(web2waveUserId);
     return response?['subscription'] as List<dynamic>?;
   }
 
   Future<Map<String, String>?> fetchUserProperties(
-      {required String userId}) async {
+      {required String web2waveUserId}) async {
     assert(apiKey != null, 'You must initialize apiKey before use');
 
-    final uri = Uri.parse('$_baseURL/api/user/properties?user=$userId');
+    final uri = Uri.parse('$_baseURL/api/user/properties?user=$web2waveUserId');
     final response = await http.get(uri, headers: _headers);
 
     if (response.statusCode == 200) {
@@ -72,12 +75,12 @@ class Web2Wave {
   }
 
   Future<Web2WaveResponse> updateUserProperty(
-      {required String userId,
+      {required String web2waveUserId,
       required String property,
       required String value}) async {
     assert(apiKey != null, 'You must initialize apiKey before use');
 
-    final uri = Uri.parse('$_baseURL/api/user/properties?user=$userId');
+    final uri = Uri.parse('$_baseURL/api/user/properties?user=$web2waveUserId');
     final response = await http.post(uri,
         headers: {..._headers, 'Content-Type': 'application/json'},
         body: jsonEncode({'property': property, 'value': value}));
@@ -91,23 +94,27 @@ class Web2Wave {
   }
 
   Future<Web2WaveResponse> setRevenuecatProfileID(
-      {required String userId, required String revenuecatProfileId}) async {
+      {required String web2waveUserId,
+      required String revenuecatProfileId}) async {
     return updateUserProperty(
-        userId: userId,
+        web2waveUserId: web2waveUserId,
         property: 'revenuecat_profile_id',
         value: revenuecatProfileId);
   }
 
   Future<Web2WaveResponse> setAdaptyProfileID(
-      {required String userId, required String adaptyProfileId}) async {
+      {required String web2waveUserId, required String adaptyProfileId}) async {
     return updateUserProperty(
-        userId: userId, property: 'adapty_profile_id', value: adaptyProfileId);
+        web2waveUserId: web2waveUserId,
+        property: 'adapty_profile_id',
+        value: adaptyProfileId);
   }
 
   Future<Web2WaveResponse> setQonversionProfileID(
-      {required String userId, required String qonverionProfileId}) async {
+      {required String web2waveUserId,
+      required String qonverionProfileId}) async {
     return updateUserProperty(
-        userId: userId,
+        web2waveUserId: web2waveUserId,
         property: 'qonversion_profile_id',
         value: qonverionProfileId);
   }

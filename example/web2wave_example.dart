@@ -10,17 +10,19 @@ void main() async {
   Web2Wave.shared.initialize(apiKey: apiKey);
 
   final subscriptions =
-      await Web2Wave.shared.fetchSubscriptions(userId: userID);
+      await Web2Wave.shared.fetchSubscriptions(web2waveUserId: userID);
   print('subscriptions: $subscriptions');
 
-  final isActive = await Web2Wave.shared.hasActiveSubscription(userId: userID);
+  final isActive =
+      await Web2Wave.shared.hasActiveSubscription(web2waveUserId: userID);
   print('isActive: $isActive');
 
-  final properties = await Web2Wave.shared.fetchUserProperties(userId: userID);
+  final properties =
+      await Web2Wave.shared.fetchUserProperties(web2waveUserId: userID);
   print('User properties: ($properties)');
 
   final result = await Web2Wave.shared.updateUserProperty(
-      userId: userID, property: 'preferredTheme', value: 'dark');
+      web2waveUserId: userID, property: 'preferredTheme', value: 'dark');
   switch (result.isSuccess) {
     case true:
       print('Property updated successfully');
@@ -28,8 +30,8 @@ void main() async {
       print('Failed to update property with error - ${result.errorMessage}');
   }
 
-  final resultAdapty = await Web2Wave.shared
-      .setAdaptyProfileID(userId: userID, adaptyProfileId: "{adaptyProfileID}");
+  final resultAdapty = await Web2Wave.shared.setAdaptyProfileID(
+      web2waveUserId: userID, adaptyProfileId: "{adaptyProfileID}");
   switch (resultAdapty.isSuccess) {
     case true:
       print('Adapty profileID saved');
@@ -39,7 +41,7 @@ void main() async {
   }
 
   final resultRevcat = await Web2Wave.shared.setRevenuecatProfileID(
-      userId: userID, revenuecatProfileId: "{revenueCatProfileID}");
+      web2waveUserId: userID, revenuecatProfileId: "{revenueCatProfileID}");
   switch (resultRevcat.isSuccess) {
     case true:
       print('RevenueCat profileID saved');
@@ -49,7 +51,7 @@ void main() async {
   }
 
   final resultQonversion = await Web2Wave.shared.setQonversionProfileID(
-      userId: userID, qonverionProfileId: "{qonversionProfileID}");
+      web2waveUserId: userID, qonverionProfileId: "{qonversionProfileID}");
   switch (resultQonversion.isSuccess) {
     case true:
       print('Qonversion profileID saved');
