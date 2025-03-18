@@ -59,4 +59,26 @@ void main() async {
       print(
           'Failed to save Qonversion profileID with error - ${result.errorMessage}');
   }
+
+  final resultCancelSubscription = await Web2Wave.shared.cancelSubscription(
+      paySystemId: 'sub_1PzNJzCsRq5tBi2bbfNsAf86', comment: 'no money');
+  switch (resultCancelSubscription.isSuccess) {
+    case true:
+      print('Subscription canceled');
+    case false:
+      print(
+          'Failed to cancel subscription with error - ${resultCancelSubscription.errorMessage}');
+  }
+
+  final resultRefundSubscription = await Web2Wave.shared.refundSubscription(
+      paySystemId: 'sub_1PzNJzCsRq5tBi2bbfNsAf86',
+      invoiceId: 'someUUID',
+      comment: 'no money');
+  switch (resultRefundSubscription.isSuccess) {
+    case true:
+      print('Subscription redunded');
+    case false:
+      print(
+          'Failed to refund subscription with error - ${resultRefundSubscription.errorMessage}');
+  }
 }

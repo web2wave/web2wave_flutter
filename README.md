@@ -48,6 +48,34 @@ Before using Web2Wave, you need to configure API key:
   final isActive = await Web2Wave.shared.hasActiveSubscription(web2waveUserId: 'userID');
 ```
 
+### External Subscription Cancel/Refund
+
+```dart
+  // Cancel subscription in external Stripe/Paddle/PayPal
+  final resultCancelSubscription = await Web2Wave.shared.cancelSubscription(
+      paySystemId: 'sub_1PzNJzCsRq5tBi2bbfNsAf86 or I-H7HC902MYM49', comment: 'may be null');
+  switch (resultCancelSubscription.isSuccess) {
+    case true:
+      print('Subscription canceled');
+    case false:
+      print(
+          'Failed to cancel subscription with error - ${resultCancelSubscription.errorMessage}');
+  }
+
+  // Refund subscription with invoiceID in external Stripe/Paddle/PayPal
+  final resultRefundSubscription = await Web2Wave.shared.refundSubscription(
+      paySystemId: 'sub_1PzNJzCsRq5tBi2bbfNsAf86 or I-H7HC902MYM49',
+      invoiceId: 'your_invoice_id',
+      comment: 'may be null');
+  switch (resultRefundSubscription.isSuccess) {
+    case true:
+      print('Subscription redunded');
+    case false:
+      print(
+          'Failed to refund subscription with error - ${resultRefundSubscription.errorMessage}');
+  }
+```
+
 ### Managing User Properties
 
 ```dart

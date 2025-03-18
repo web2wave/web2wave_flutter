@@ -56,6 +56,53 @@ class Web2Wave {
     return response?['subscription'] as List<dynamic>?;
   }
 
+  Future<Web2WaveResponse> cancelSubscription(
+      {required String paySystemId, String? comment}) async {
+    assert(apiKey != null, 'You must initialize apiKey before use');
+
+    final uri = Uri.parse('$_baseURL/api/subscription/cancel');
+
+    Map<String, String> body = {
+      'pay_system_id': paySystemId,
+    };
+    if (comment != null && comment.isNotEmpty) {
+      body['comment'] = comment;
+    }
+
+    final response = await http.put(uri, body: body, headers: _headers);
+    final result = jsonDecode(response.body) as Map<String, dynamic>;
+    if (response.statusCode == 200) {
+      return Web2WaveResponse(result['success'] == '1');
+    } else {
+      return Web2WaveResponse(false, result['error_msg']);
+    }
+  }
+
+  Future<Web2WaveResponse> refundSubscription(
+      {required String paySystemId,
+      required String invoiceId,
+      String? comment}) async {
+    assert(apiKey != null, 'You must initialize apiKey before use');
+
+    final uri = Uri.parse('$_baseURL/api/subscription/refund');
+
+    Map<String, String> body = {
+      'pay_system_id': paySystemId,
+      'invoice_id': invoiceId,
+    };
+    if (comment != null && comment.isNotEmpty) {
+      body['comment'] = comment;
+    }
+
+    final response = await http.put(uri, body: body, headers: _headers);
+    final result = jsonDecode(response.body) as Map<String, dynamic>;
+    if (response.statusCode == 200) {
+      return Web2WaveResponse(result['success'] == '1');
+    } else {
+      return Web2WaveResponse(false, result['error_msg']);
+    }
+  }
+
   Future<Map<String, String>?> fetchUserProperties(
       {required String web2waveUserId}) async {
     assert(apiKey != null, 'You must initialize apiKey before use');
