@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -15,6 +16,7 @@ class Web2Wave {
 
   final String _baseURL = 'https://api.web2wave.com';
   String? apiKey;
+  BuildContext? dialogContext;
 
   Map<String, String> get _headers => {
         'api-key': apiKey!,

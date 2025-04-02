@@ -25,9 +25,27 @@ class _HomePageState extends State<HomePage> {
         onPressed: () => Web2Wave.shared.openWebPage(
             context: context,
             webPageURL: 'your-url',
+            listener: EventListener(),
             useSafeArea: true), //use safe area is false by default
         child: const Icon(Icons.add),
       ),
     );
+  }
+}
+
+class EventListener extends Web2WaveWebListener {
+  @override
+  void onEvent({required String event, Map<String, dynamic>? data}) {
+    print("\n $event - [$data] \n");
+  }
+
+  @override
+  void onClose(Map<String, dynamic>? data) {
+    print("\n onClose - [$data] \n");
+  }
+
+  @override
+  void onQuizFinished(Map<String, dynamic>? data) {
+    print("\n onQuizFinished - [$data] \n");
   }
 }
