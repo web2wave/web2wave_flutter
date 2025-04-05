@@ -36,10 +36,8 @@ class _Web2WaveWebScreenState extends State<Web2WaveWebScreen> {
     final eventData = data['data'];
 
     if (event == 'Quiz finished') {
-      Web2Wave.shared.closeWebPage();
       widget.listener?.onQuizFinished(eventData);
     } else if (event == 'Close webview') {
-      Web2Wave.shared.closeWebPage();
       widget.listener?.onClose(eventData);
     } else {
       widget.listener?.onEvent(event: event, data: eventData);

@@ -151,11 +151,13 @@ Before using Web2Wave, you need to configure API key:
     @override
     void onClose(Map<String, dynamic>? data) {
       print("\n onClose - [$data] \n");
+      Web2Wave.shared.closeWebPage();
     }
 
     @override
     void onQuizFinished(Map<String, dynamic>? data) {
       print("\n onQuizFinished - [$data] \n");
+      Web2Wave.shared.closeWebPage();
     }
   }
 
@@ -163,10 +165,9 @@ Before using Web2Wave, you need to configure API key:
   Web2Wave.shared.openWebPage(
             context: context,
             webPageURL: 'your-url',
-            listener: EventListener(),
-            useSafeArea: true)
+            listener: EventListener())
 
-  //Close web page if needed. Web page will be automaticaly closed on events `onClose` & `onQuizFinished`
+  //Close web page
   Web2Wave.shared.closeWebPage();
 ```
 
@@ -194,35 +195,37 @@ Retrieves all properties associated with a user.
 
 Updates a specific property for a user.
 
-#### `Future<Web2WaveResponse> setRevenuecatProfileID({required String web2waveUserId, required String revenuecatProfileId})`
+#### `Future<Web2WaveResponse> chargeUser({required String web2waveUserId, required int priceId})`
 
-Cancel external subscription
+Charge existing user with saved payment method
 
 #### `Future<Web2WaveResponse> cancelSubscription({required String paySystemId, String? comment})`
 
-Refund external subscription
+Cancel external subscription
 
 #### `Future<Web2WaveResponse> refundSubscription({required String paySystemId, required String invoiceId, String? comment})`
 
-Set Revenuecat profileID
+Refund external subscription
 
 #### `Future<Web2WaveResponse> setRevenuecatProfileID({required String web2waveUserId, required String revenuecatProfileId})`
 
-Set Adapty profileID
+Set Revenuecat profileID
 
 #### `Future<Web2WaveResponse> setAdaptyProfileID({required String web2waveUserId, required String adaptyProfileId})`
 
-Set Qonversion ProfileID
+Set Adapty profileID
 
 #### `Future<Web2WaveResponse> setQonversionProfileID({required String web2waveUserId, required String qonverionProfileId})`
 
+Set Qonversion ProfileID
+
+#### `void openWebPage({required BuildContext context, required String webPageURL, Web2WaveWebListener? listener})`
+
 Open web quiz or landing page
 
-#### `void openWebPage({required BuildContext context, required String webPageURL, Web2WaveWebListener? listener, bool useSafeArea = false})`
+#### `void closeWebPage()`
 
 Close web quiz or landing page
-
-#### `void closeWebPage()`
 
 ## Requirements
 

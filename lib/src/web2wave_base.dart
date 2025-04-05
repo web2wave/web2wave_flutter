@@ -58,6 +58,26 @@ class Web2Wave {
     return response?['subscription'] as List<dynamic>?;
   }
 
+  Future<Web2WaveResponse> chargeUser(
+      {required String web2waveUserId, required int priceId}) async {
+    assert(apiKey != null, 'You must initialize apiKey before use');
+
+    final uri = Uri.parse('$_baseURL/api/subscription/user/charge');
+
+    Map<String, dynamic> body = {
+      'user_id': web2waveUserId,
+      'price_id': priceId,
+    };
+
+    final response = await http.post(uri, body: body, headers: _headers);
+    final result = jsonDecode(response.body) as Map<String, dynamic>;
+    if (response.statusCode == 200) {
+      return Web2WaveResponse(result['success'] == '1');
+    } else {
+      return Web2WaveResponse(false, result['message']);
+    }
+  }
+
   Future<Web2WaveResponse> cancelSubscription(
       {required String paySystemId, String? comment}) async {
     assert(apiKey != null, 'You must initialize apiKey before use');

@@ -14,19 +14,24 @@ extension Web2WaveQuiz on Web2Wave {
   void openWebPage(
       {required BuildContext context,
       required String webPageURL,
-      Web2WaveWebListener? listener,
-      bool useSafeArea = false}) {
+      Web2WaveWebListener? listener}) {
     assert(apiKey != null, 'You must initialize apiKey before use');
     assert(isValidUrl(webPageURL), 'You must provide valid url');
+
+    final mediaQuery = MediaQuery.of(context);
+    final int safeTop = mediaQuery.padding.top.toInt();
+    final int safeBottom = mediaQuery.padding.bottom.toInt();
 
     showDialog(
         context: context,
         barrierDismissible: false,
-        useSafeArea: useSafeArea,
+        useSafeArea: false,
         builder: (context) {
           dialogContext = context;
           return Web2WaveWebScreen(
-              url: '$webPageURL?webview_flutter=1', listener: listener);
+              url:
+                  '$webPageURL?webview_flutter=1&top_padding=$safeTop&bottom_padding=$safeBottom',
+              listener: listener);
         });
   }
 
