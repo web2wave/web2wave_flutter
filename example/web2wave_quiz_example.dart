@@ -25,6 +25,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: () => Web2Wave.shared.openWebPage(
             context: context,
             webPageURL: 'your-url',
+            allowBackNavigation: false,
             listener: EventListener()),
         child: const Icon(Icons.add),
       ),

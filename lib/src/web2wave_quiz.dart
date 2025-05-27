@@ -14,7 +14,8 @@ extension Web2WaveQuiz on Web2Wave {
   void openWebPage(
       {required BuildContext context,
       required String webPageURL,
-      Web2WaveWebListener? listener}) {
+      Web2WaveWebListener? listener,
+      bool allowBackNavigation = false}) {
     assert(apiKey != null, 'You must initialize apiKey before use');
     assert(isValidUrl(webPageURL), 'You must provide valid url');
 
@@ -29,15 +30,18 @@ extension Web2WaveQuiz on Web2Wave {
         builder: (context) {
           dialogContext = context;
           return Web2WaveWebScreen(
-              url:
-                  '$webPageURL?webview_flutter=1&top_padding=$safeTop&bottom_padding=$safeBottom',
-              listener: listener);
+            url:
+                '$webPageURL?webview_flutter=1&top_padding=$safeTop&bottom_padding=$safeBottom',
+            allowBackNavigation: allowBackNavigation,
+            listener: listener,
+          );
         });
   }
 
   void closeWebPage() {
     if (dialogContext != null) {
-      Navigator.pop(dialogContext!);
+      Navigator.of(dialogContext!).pop();
+      dialogContext = null;
     }
   }
 }

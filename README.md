@@ -165,6 +165,7 @@ Before using Web2Wave, you need to configure API key:
   Web2Wave.shared.openWebPage(
             context: context,
             webPageURL: 'your-url',
+            allowBackNavigation: true
             listener: EventListener())
 
   //Close web page
@@ -219,7 +220,7 @@ Set Adapty profileID
 
 Set Qonversion ProfileID
 
-#### `void openWebPage({required BuildContext context, required String webPageURL, Web2WaveWebListener? listener})`
+#### `void openWebPage({required BuildContext context, required String webPageURL, required bool allowBackNavigation, Web2WaveWebListener? listener})`
 
 Open web quiz or landing page
 

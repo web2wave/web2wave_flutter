@@ -1,13 +1,20 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:web2wave/web2wave.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class Web2WaveWebScreen extends StatefulWidget {
   final String url;
+  final bool allowBackNavigation;
   final Web2WaveWebListener? listener;
 
-  const Web2WaveWebScreen({super.key, required this.url, this.listener});
+  const Web2WaveWebScreen({
+    super.key,
+    required this.url,
+    required this.allowBackNavigation,
+    this.listener,
+  });
 
   @override
   State<Web2WaveWebScreen> createState() => _Web2WaveWebScreenState();
@@ -15,12 +22,22 @@ class Web2WaveWebScreen extends StatefulWidget {
 
 class _Web2WaveWebScreenState extends State<Web2WaveWebScreen> {
   late final WebViewController _controller;
+  bool _isLoaded = false;
 
   @override
   void initState() {
     super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (url) {
+            setState(() {
+              _isLoaded = true;
+            });
+          },
+        ),
+      )
       ..addJavaScriptChannel(
         'FlutterChannel',
         onMessageReceived: (JavaScriptMessage message) {
@@ -46,6 +63,39 @@ class _Web2WaveWebScreenState extends State<Web2WaveWebScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WebViewWidget(controller: _controller);
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (b, r) async {
+        if (widget.allowBackNavigation) {
+          final canGoBack = await _controller.canGoBack();
+          if (canGoBack) {
+            _controller.goBack();
+          } else {
+            widget.listener?.onClose({});
+          }
+        }
+      },
+      child: Stack(
+        children: [
+          if (Platform.isIOS && widget.allowBackNavigation)
+            GestureDetector(
+              onHorizontalDragUpdate: (details) async {
+                if (details.globalPosition.dx < 150 && details.delta.dx > 0) {
+                  final canGoBack = await _controller.canGoBack();
+                  if (canGoBack) {
+                    _controller.goBack();
+                  } else {
+                    widget.listener?.onClose({});
+                  }
+                }
+              },
+              child: WebViewWidget(controller: _controller),
+            )
+          else
+            WebViewWidget(controller: _controller),
+          if (!_isLoaded) const Center(child: CircularProgressIndicator()),
+        ],
+      ),
+    );
   }
 }
