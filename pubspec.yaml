@@ -1,6 +1,6 @@
 name: web2wave
 description: Web2Wave is a lightweight Flutter package that provides a simple interface for managing user subscriptions and properties through a REST API.
-version: 1.1.0
+version: 1.1.1
 repository: https://github.com/web2wave/web2wave_flutter
 homepage: https://web2wave.com
 issue_tracker: https://github.com/web2wave/web2wave_flutter/issues
