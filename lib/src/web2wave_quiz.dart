@@ -30,8 +30,7 @@ extension Web2WaveQuiz on Web2Wave {
         builder: (context) {
           dialogContext = context;
           return Web2WaveWebScreen(
-            url:
-                '$webPageURL?webview_flutter=1&top_padding=$safeTop&bottom_padding=$safeBottom',
+            url: prepareUrl(webPageURL, safeTop, safeBottom),  
             allowBackNavigation: allowBackNavigation,
             listener: listener,
           );
