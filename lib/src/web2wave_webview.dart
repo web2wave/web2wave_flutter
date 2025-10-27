@@ -8,12 +8,14 @@ class Web2WaveWebScreen extends StatefulWidget {
   final String url;
   final bool allowBackNavigation;
   final Web2WaveWebListener? listener;
+  final Color backgroundColor;
 
   const Web2WaveWebScreen({
     super.key,
     required this.url,
     required this.allowBackNavigation,
     this.listener,
+    required this.backgroundColor,
   });
 
   @override
@@ -38,6 +40,7 @@ class _Web2WaveWebScreenState extends State<Web2WaveWebScreen> {
           },
         ),
       )
+      ..setBackgroundColor(widget.backgroundColor)
       ..addJavaScriptChannel(
         'FlutterChannel',
         onMessageReceived: (JavaScriptMessage message) {
