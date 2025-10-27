@@ -166,11 +166,14 @@ Before using Web2Wave, you need to configure API key:
             context: context,
             webPageURL: 'your-url',
             allowBackNavigation: true
-            listener: EventListener())
+            listener: EventListener(),
+            backgroundColor: Color(0xFF133C75),
+)
 
   //Close web page
   Web2Wave.shared.closeWebPage();
 ```
+The backgroundColor parameter in openWebPage function is optional. If not provided, the default background color will be white.
 
 ## API Reference
 
