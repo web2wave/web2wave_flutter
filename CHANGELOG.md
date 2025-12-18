@@ -1,15 +1,16 @@
-## 1.0.0
+## 1.1.3
 
-- Initial version.
-
-## 1.1.0
-
-- Add webview for paywall and quizzes.
+- Fixed null pointer exception on fetching user properties
 
 ## 1.1.1
 
 - Add posibility to manage webview history back events.
 
-## 1.1.3
+## 1.1.0
 
-- Fixed null pointer exception on fetching user properties
+- Add webview for paywall and quizzes.
+
+## 1.0.0
+
+- Initial version.
+
