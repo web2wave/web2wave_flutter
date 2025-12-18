@@ -1,3 +1,7 @@
+## 1.1.5
+
+- Version bump
+
 ## 1.1.4
 
 - Version bump
