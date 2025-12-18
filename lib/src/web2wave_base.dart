@@ -125,7 +125,7 @@ class Web2Wave {
     }
   }
 
-  Future<Map<String, String>?> fetchUserProperties(
+  Future<Map<String, String?>?> fetchUserProperties(
       {required String web2waveUserId}) async {
     assert(apiKey != null, 'You must initialize apiKey before use');
 
@@ -135,7 +135,7 @@ class Web2Wave {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as Map<String, dynamic>;
       final propertiesList = data['properties'] as List<dynamic>?;
-      return propertiesList?.fold<Map<String, String>>({}, (map, item) {
+      return propertiesList?.fold<Map<String, String?>>({}, (map, item) {
         map[item['property']] = item['value'];
         return map;
       });
