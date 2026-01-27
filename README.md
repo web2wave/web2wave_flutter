@@ -7,6 +7,7 @@ Web2Wave is a lightweight Flutter package that provides a simple interface for m
 - Fetch subscription status for users
 - Check for active subscriptions
 - Manage user properties
+- Identify users via device fingerprinting
 - Set third-parties profiles
 - Thread-safe singleton design
 - Async/await API support
@@ -94,6 +95,12 @@ Before using Web2Wave, you need to configure API key:
     case false:
       print('Failed to update property with error - ${result.errorMessage}');
   }
+```
+
+### Identify users via device fingerprinting
+```dart
+// Identify
+final data = await Web2Wave.shared.identify()
 ```
 
 ### Managing third-party profiles
@@ -222,6 +229,10 @@ Set Adapty profileID
 #### `Future<Web2WaveResponse> setQonversionProfileID({required String web2waveUserId, required String qonverionProfileId})`
 
 Set Qonversion ProfileID
+
+#### `Future<Map<String, dynamic?>?> identify()`
+
+Identifies a user using the device fingerprint and returns identification metadata.
 
 #### `void openWebPage({required BuildContext context, required String webPageURL, required bool allowBackNavigation, Web2WaveWebListener? listener})`
 
