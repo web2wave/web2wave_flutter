@@ -1,6 +1,6 @@
 ## 1.1.6
 
-- Added identify method for device fingerprinting
+- Added identify method
 
 ## 1.1.5
 
