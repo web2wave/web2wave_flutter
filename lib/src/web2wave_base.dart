@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:io';
-import 'dart:ui';
 
 class Web2WaveResponse {
   bool isSuccess;
@@ -233,14 +231,14 @@ class Web2Wave {
         value: qonverionProfileId);
   }
 
-  Future<Map<String, dynamic?>?> identify() async {
+  Future<Map<String, dynamic>?> identify() async {
     assert(apiKey != null, 'You must initialize apiKey before use');
 
     final uri = Uri.parse('$_baseURL/api/user/identify');
     final response = await http.get(uri, headers: _headers);
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body) as Map<String, dynamic?>;
+      return jsonDecode(response.body) as Map<String, dynamic>;
     }
     return null;
   }

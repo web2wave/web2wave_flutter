@@ -238,7 +238,7 @@ Set Adapty profileID
 
 Set Qonversion ProfileID
 
-#### `Future<Map<String, dynamic?>?> identify()`
+#### `Future<Map<String, dynamic>?> identify()`
 
 Identifies a user using the device fingerprint and returns identification metadata.
 
