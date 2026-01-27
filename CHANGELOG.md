@@ -1,3 +1,7 @@
+## 1.1.7
+
+- Fix identify methodump
+
 ## 1.1.6
 
 - Added identify method
