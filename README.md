@@ -98,9 +98,18 @@ Before using Web2Wave, you need to configure API key:
 ```
 
 ### Identify users via device fingerprinting
+
 ```dart
-// Identify
-final data = await Web2Wave.shared.identify()
+  // Identify user using device fingerprint
+  final identificationData = await Web2Wave.shared.identify();
+  
+  if (identificationData != null) {
+    print('User identified: $identificationData');
+    // identificationData contains device fingerprint information
+    // such as user_id, device_id, and other metadata
+  } else {
+    print('Failed to identify user');
+  }
 ```
 
 ### Managing third-party profiles
