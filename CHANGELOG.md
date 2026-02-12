@@ -1,3 +1,7 @@
+## 1.1.9
+
+- Enhanced user identification across web and mobile platforms
+
 ## 1.1.8
 
 - Version bump
