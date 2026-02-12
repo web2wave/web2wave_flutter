@@ -99,16 +99,54 @@ Before using Web2Wave, you need to configure API key:
 
 ### Identify web2wave user
 
+The `identify()` method identifies a user using device fingerprinting and returns identification metadata including the `user_id`. This `user_id` can then be used with other Web2Wave methods.
+
 ```dart
   // Identify web2wave user
   final identificationData = await Web2Wave.shared.identify();
   
-  if (identificationData != null) {
-    print('User identified: $identificationData');
-    // such as user_id, device_id, and other metadata
+  if (identificationData != null && identificationData['success'] == 1) {
+    // Extract user_id from the response
+    final userId = identificationData['user_id'] as String?;
+    final matchMethod = identificationData['match_method'];
+    final platform = identificationData['platform'];
+    
+    if (userId != null) {
+      // Example: Set Adapty profile ID
+      final adaptyProfile = await Adapty().getProfile();
+      if (adaptyProfile?.profileId != null) {
+        await Web2Wave.shared.setAdaptyProfileID(
+          web2waveUserId: userId,
+          adaptyProfileId: adaptyProfile!.profileId!
+        );
+        
+        // Wait 2 seconds and restore purchases
+        await Future.delayed(Duration(seconds: 2));
+        await Adapty().restorePurchases();
+      }
+            
+      // Example: Fetch user properties
+      final properties = await Web2Wave.shared.fetchUserProperties(web2waveUserId: userId);
+    } else {
+      print('User ID not found in identification response');
+    }
   } else {
     print('Failed to identify user');
   }
+```
+
+
+**Response Format:**
+
+The `identify()` method returns a `Map<String, dynamic>?` with the following structure:
+
+```dart
+{
+  'success': 1,
+  'user_id': 'identified_user_guid',
+  'match_method': 'match_method_used',
+  'platform': 'iOS' // or 'Android'
+}
 ```
 
 ### Managing third-party profiles

@@ -1,3 +1,7 @@
+## 1.1.8
+
+- Version bump
+
 ## 1.1.7
 
 - Fix identify methodump

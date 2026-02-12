@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:device_info_plus/device_info_plus.dart';
 
 class Web2WaveResponse {
   bool isSuccess;
@@ -20,6 +21,11 @@ class Web2Wave {
   final String _baseURL = 'https://api.web2wave.com';
   String? apiKey;
   BuildContext? dialogContext;
+  
+  final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
+  
+  // Cache device info to avoid repeated async calls
+  String? _cachedOSVersion;
 
   String _getPlatform() {
     if (Platform.isIOS) {
@@ -61,13 +67,38 @@ class Web2Wave {
     return 'UTC$sign$hoursStr:$minutesStr';
   }
 
-  Map<String, String> get _headers => {
+  /// Get OS version (e.g., "iOS 19.0", "Android 14")
+  Future<String> _getOSVersion() async {
+    if (_cachedOSVersion != null) return _cachedOSVersion!;
+    
+    try {
+      if (Platform.isIOS) {
+        final iosInfo = await _deviceInfo.iosInfo;
+        _cachedOSVersion = 'iOS ${iosInfo.systemVersion}';
+        return _cachedOSVersion!;
+      } else if (Platform.isAndroid) {
+        final androidInfo = await _deviceInfo.androidInfo;
+        _cachedOSVersion = 'Android ${androidInfo.version.release}';
+        return _cachedOSVersion!;
+      }
+    } catch (e) {
+      // Fallback to Platform.operatingSystemVersion if device_info_plus fails
+      _cachedOSVersion = Platform.operatingSystemVersion;
+      return _cachedOSVersion!;
+    }
+    return 'Unknown';
+  }
+
+  /// Get headers with device fingerprinting information
+  /// This is now async because it needs to fetch OS version
+  Future<Map<String, String>> get _headers async => {
         'api-key': apiKey!,
         'Cache-Control': 'no-cache',
         'Pragma': 'no-cache',
         'platform': _getPlatform(),
         'screen_size': _getScreenSize(),
         'timezone': _getTimezone(),
+        'os_version': await _getOSVersion(),
       };
 
   void initialize({required String apiKey}) {
@@ -80,7 +111,7 @@ class Web2Wave {
 
     final uri =
         Uri.parse('$_baseURL/api/user/subscriptions?user=$web2waveUserId');
-    final response = await http.get(uri, headers: _headers);
+    final response = await http.get(uri, headers: await _headers);
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as Map<String, dynamic>;
@@ -115,7 +146,7 @@ class Web2Wave {
       'price_id': priceId,
     };
 
-    final response = await http.post(uri, body: body, headers: _headers);
+    final response = await http.post(uri, body: body, headers: await _headers);
     final result = jsonDecode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 200) {
       return Web2WaveResponse(result['success'] == '1');
@@ -137,7 +168,7 @@ class Web2Wave {
       body['comment'] = comment;
     }
 
-    final response = await http.put(uri, body: body, headers: _headers);
+    final response = await http.put(uri, body: body, headers: await _headers);
     final result = jsonDecode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 200) {
       return Web2WaveResponse(result['success'] == '1');
@@ -162,7 +193,7 @@ class Web2Wave {
       body['comment'] = comment;
     }
 
-    final response = await http.put(uri, body: body, headers: _headers);
+    final response = await http.put(uri, body: body, headers: await _headers);
     final result = jsonDecode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 200) {
       return Web2WaveResponse(result['success'] == '1');
@@ -176,7 +207,7 @@ class Web2Wave {
     assert(apiKey != null, 'You must initialize apiKey before use');
 
     final uri = Uri.parse('$_baseURL/api/user/properties?user=$web2waveUserId');
-    final response = await http.get(uri, headers: _headers);
+    final response = await http.get(uri, headers: await _headers);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -196,8 +227,9 @@ class Web2Wave {
     assert(apiKey != null, 'You must initialize apiKey before use');
 
     final uri = Uri.parse('$_baseURL/api/user/properties?user=$web2waveUserId');
+    final headers = await _headers;
     final response = await http.post(uri,
-        headers: {..._headers, 'Content-Type': 'application/json'},
+        headers: {...headers, 'Content-Type': 'application/json'},
         body: jsonEncode({'property': property, 'value': value}));
 
     final result = jsonDecode(response.body) as Map<String, dynamic>;
@@ -238,7 +270,7 @@ class Web2Wave {
     assert(apiKey != null, 'You must initialize apiKey before use');
 
     final uri = Uri.parse('$_baseURL/api/user/identify');
-    final response = await http.get(uri, headers: _headers);
+    final response = await http.get(uri, headers: await _headers);
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as Map<String, dynamic>;
