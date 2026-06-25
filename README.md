@@ -7,7 +7,7 @@ Web2Wave is a lightweight Flutter package that provides a simple interface for m
 - Fetch subscription status for users
 - Check for active subscriptions
 - Manage user properties
-- Identify web2wave user
+- Identify web2wave user via device fingerprinting (MMP-free alternative to AppsFlyer / Adjust / Branch)
 - Set third-parties profiles
 - Thread-safe singleton design
 - Async/await API support
@@ -99,7 +99,7 @@ Before using Web2Wave, you need to configure API key:
 
 ### Identify web2wave user
 
-The `identify()` method identifies a user using device fingerprinting and returns identification metadata including the `user_id`. This `user_id` can then be used with other Web2Wave methods.
+The `identify()` method identifies a user using device fingerprinting and returns identification metadata including the `user_id`. Use it as an **alternative to MMP attribution** (AppsFlyer, Adjust, Branch, etc.) when you do not run those tools — call it on first app launch instead of reading an install deeplink.
 
 ```dart
   // Identify web2wave user
@@ -278,7 +278,7 @@ Set Qonversion ProfileID
 
 #### `Future<Map<String, dynamic>?> identify()`
 
-Identifies a user using the device fingerprint and returns identification metadata.
+Identifies a user using the device fingerprint. Alternative to MMP-based deeplink attribution when you do not use AppsFlyer, Adjust, Branch, etc.
 
 #### `void openWebPage({required BuildContext context, required String webPageURL, required bool allowBackNavigation, Web2WaveWebListener? listener})`
 
