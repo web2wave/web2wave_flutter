@@ -1,3 +1,7 @@
+## 1.1.10
+
+- Send `device_model` header for identify fingerprinting (Android `Build.MODEL`, iOS machine id)
+
 ## 1.1.9
 
 - Enhanced user identification across web and mobile platforms

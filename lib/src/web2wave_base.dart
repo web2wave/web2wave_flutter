@@ -26,6 +26,7 @@ class Web2Wave {
   
   // Cache device info to avoid repeated async calls
   String? _cachedOSVersion;
+  String? _cachedDeviceModel;
 
   String _getPlatform() {
     if (Platform.isIOS) {
@@ -89,17 +90,55 @@ class Web2Wave {
     return 'Unknown';
   }
 
+  /// Device model for fingerprinting (e.g. "Pixel 7", "SM-S911B").
+  /// Matches Chrome Client Hints `model` on Android web visits.
+  Future<String?> _getDeviceModel() async {
+    if (_cachedDeviceModel != null) {
+      return _cachedDeviceModel!.isEmpty ? null : _cachedDeviceModel;
+    }
+
+    try {
+      if (Platform.isAndroid) {
+        final androidInfo = await _deviceInfo.androidInfo;
+        final model = androidInfo.model.trim();
+        _cachedDeviceModel = model;
+        return model.isEmpty ? null : model;
+      }
+      if (Platform.isIOS) {
+        // utsname.machine is "iPhone15,2" — not aligned with web CH (unavailable on Safari).
+        // Still useful for app↔app / analytics; web→iOS continues to rely on screen_size.
+        final iosInfo = await _deviceInfo.iosInfo;
+        final machine = iosInfo.utsname.machine.trim();
+        _cachedDeviceModel = machine;
+        return machine.isEmpty ? null : machine;
+      }
+    } catch (e) {
+      _cachedDeviceModel = '';
+      return null;
+    }
+    return null;
+  }
+
   /// Get headers with device fingerprinting information
-  /// This is now async because it needs to fetch OS version
-  Future<Map<String, String>> get _headers async => {
-        'api-key': apiKey!,
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache',
-        'platform': _getPlatform(),
-        'screen_size': _getScreenSize(),
-        'timezone': _getTimezone(),
-        'os_version': await _getOSVersion(),
-      };
+  /// This is now async because it needs to fetch OS version / device model
+  Future<Map<String, String>> get _headers async {
+    final headers = <String, String>{
+      'api-key': apiKey!,
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
+      'platform': _getPlatform(),
+      'screen_size': _getScreenSize(),
+      'timezone': _getTimezone(),
+      'os_version': await _getOSVersion(),
+    };
+
+    final deviceModel = await _getDeviceModel();
+    if (deviceModel != null) {
+      headers['device_model'] = deviceModel;
+    }
+
+    return headers;
+  }
 
   void initialize({required String apiKey}) {
     this.apiKey = apiKey;
