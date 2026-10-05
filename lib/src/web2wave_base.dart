@@ -305,6 +305,24 @@ class Web2Wave {
         value: qonverionProfileId);
   }
 
+  Future<Web2WaveResponse> setApphudProfileID(
+      {required String web2waveUserId,
+      required String apphudProfileId}) async {
+    return updateUserProperty(
+        web2waveUserId: web2waveUserId,
+        property: 'apphud_profile_id',
+        value: apphudProfileId);
+  }
+
+  Future<Web2WaveResponse> setSuperwallProfileID(
+      {required String web2waveUserId,
+      required String superwallProfileId}) async {
+    return updateUserProperty(
+        web2waveUserId: web2waveUserId,
+        property: 'superwall_profile_id',
+        value: superwallProfileId);
+  }
+
   Future<Map<String, dynamic>?> identify() async {
     assert(apiKey != null, 'You must initialize apiKey before use');
 

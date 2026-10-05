@@ -189,6 +189,20 @@ The `identify()` method returns a `Map<String, dynamic>?` with the following str
       print(
           'Failed to save Qonversion profileID with error - ${result.errorMessage}');
   }
+
+  // Save Apphud profileID
+  final resultApphud = await Web2Wave.shared.setApphudProfileID(
+      web2waveUserId: "user123", apphudProfileId: "{apphudProfileID}");
+  print(resultApphud.isSuccess
+      ? 'Apphud profileID saved'
+      : 'Failed to save Apphud profileID - ${resultApphud.errorMessage}');
+
+  // Save Superwall profileID (Superwall.shared.userId after identify())
+  final resultSuperwall = await Web2Wave.shared.setSuperwallProfileID(
+      web2waveUserId: "user123", superwallProfileId: "{superwallProfileID}");
+  print(resultSuperwall.isSuccess
+      ? 'Superwall profileID saved'
+      : 'Failed to save Superwall profileID - ${resultSuperwall.errorMessage}');
 ```
 
 ### Working with quiz or landing web page
@@ -275,6 +289,14 @@ Set Adapty profileID
 #### `Future<Web2WaveResponse> setQonversionProfileID({required String web2waveUserId, required String qonverionProfileId})`
 
 Set Qonversion ProfileID
+
+#### `Future<Web2WaveResponse> setApphudProfileID({required String web2waveUserId, required String apphudProfileId})`
+
+Set Apphud ProfileID
+
+#### `Future<Web2WaveResponse> setSuperwallProfileID({required String web2waveUserId, required String superwallProfileId})`
+
+Set Superwall ProfileID
 
 #### `Future<Map<String, dynamic>?> identify()`
 
