@@ -1,4 +1,4 @@
-## Unreleased
+## 1.1.11
 
 - Add `setApphudProfileID` and `setSuperwallProfileID` (sync web subscriptions to Apphud / Superwall)
 
