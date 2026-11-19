@@ -6,12 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:device_info_plus/device_info_plus.dart';
 
-class Web2WaveResponse {
-  bool isSuccess;
-  String? errorMessage;
+import 'response_parsing.dart';
 
-  Web2WaveResponse(this.isSuccess, [this.errorMessage]);
-}
+export 'response_parsing.dart' show Web2WaveResponse;
 
 class Web2Wave {
   static final Web2Wave shared = Web2Wave._internal();
@@ -21,6 +18,10 @@ class Web2Wave {
   final String _baseURL = 'https://api.web2wave.com';
   String? apiKey;
   BuildContext? dialogContext;
+
+  /// HTTP client used for API calls. Defaults to a shared [http.Client];
+  /// can be replaced, e.g. with a `MockClient` in tests.
+  http.Client httpClient = http.Client();
   
   final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
   
@@ -150,7 +151,7 @@ class Web2Wave {
 
     final uri =
         Uri.parse('$_baseURL/api/user/subscriptions?user=$web2waveUserId');
-    final response = await http.get(uri, headers: await _headers);
+    final response = await httpClient.get(uri, headers: await _headers);
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as Map<String, dynamic>;
@@ -180,18 +181,16 @@ class Web2Wave {
 
     final uri = Uri.parse('$_baseURL/api/subscription/user/charge');
 
-    Map<String, dynamic> body = {
-      'user_id': web2waveUserId,
-      'price_id': priceId,
-    };
-
-    final response = await http.post(uri, body: body, headers: await _headers);
-    final result = jsonDecode(response.body) as Map<String, dynamic>;
-    if (response.statusCode == 200) {
-      return Web2WaveResponse(result['success'] == '1');
-    } else {
-      return Web2WaveResponse(false, result['message']);
-    }
+    // Sent as JSON so `price_id` stays an integer (a form body only takes
+    // string values).
+    final headers = await _headers;
+    final response = await httpClient.post(uri,
+        headers: {...headers, 'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'user_id': web2waveUserId,
+          'price_id': priceId,
+        }));
+    return parseActionResponse(response);
   }
 
   Future<Web2WaveResponse> cancelSubscription(
@@ -207,13 +206,9 @@ class Web2Wave {
       body['comment'] = comment;
     }
 
-    final response = await http.put(uri, body: body, headers: await _headers);
-    final result = jsonDecode(response.body) as Map<String, dynamic>;
-    if (response.statusCode == 200) {
-      return Web2WaveResponse(result['success'] == '1');
-    } else {
-      return Web2WaveResponse(false, result['error_msg']);
-    }
+    final response =
+        await httpClient.put(uri, body: body, headers: await _headers);
+    return parseActionResponse(response);
   }
 
   Future<Web2WaveResponse> refundSubscription(
@@ -232,13 +227,9 @@ class Web2Wave {
       body['comment'] = comment;
     }
 
-    final response = await http.put(uri, body: body, headers: await _headers);
-    final result = jsonDecode(response.body) as Map<String, dynamic>;
-    if (response.statusCode == 200) {
-      return Web2WaveResponse(result['success'] == '1');
-    } else {
-      return Web2WaveResponse(false, result['error_msg']);
-    }
+    final response =
+        await httpClient.put(uri, body: body, headers: await _headers);
+    return parseActionResponse(response);
   }
 
   Future<Map<String, String?>?> fetchUserProperties(
@@ -246,7 +237,7 @@ class Web2Wave {
     assert(apiKey != null, 'You must initialize apiKey before use');
 
     final uri = Uri.parse('$_baseURL/api/user/properties?user=$web2waveUserId');
-    final response = await http.get(uri, headers: await _headers);
+    final response = await httpClient.get(uri, headers: await _headers);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -267,16 +258,10 @@ class Web2Wave {
 
     final uri = Uri.parse('$_baseURL/api/user/properties?user=$web2waveUserId');
     final headers = await _headers;
-    final response = await http.post(uri,
+    final response = await httpClient.post(uri,
         headers: {...headers, 'Content-Type': 'application/json'},
         body: jsonEncode({'property': property, 'value': value}));
-
-    final result = jsonDecode(response.body) as Map<String, dynamic>;
-    if (response.statusCode == 200) {
-      return Web2WaveResponse(result['result'] == '1');
-    } else {
-      return Web2WaveResponse(false, result['error_msg']);
-    }
+    return parseActionResponse(response, successKey: 'result');
   }
 
   Future<Web2WaveResponse> setRevenuecatProfileID(
@@ -327,7 +312,7 @@ class Web2Wave {
     assert(apiKey != null, 'You must initialize apiKey before use');
 
     final uri = Uri.parse('$_baseURL/api/user/identify');
-    final response = await http.get(uri, headers: await _headers);
+    final response = await httpClient.get(uri, headers: await _headers);
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as Map<String, dynamic>;
