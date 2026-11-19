@@ -1,3 +1,10 @@
+## 1.1.12
+
+- Fix `cancelSubscription`, `refundSubscription` and `chargeUser` reporting successful calls as failures (the API returns `success: true` / `1`, not `"1"`)
+- Fix `chargeUser` throwing before sending the request (integer `price_id` in a form body); the body is now sent as JSON
+- Error responses now carry the backend reason (`error_msg`, then `message`) in `errorMessage`, including non-2xx responses such as a 403 for a missing API key scope; non-JSON error bodies no longer throw
+- Add `Web2Wave.shared.httpClient` to supply a custom `http.Client` (e.g. `MockClient` in tests)
+
 ## 1.1.11
 
 - Add `setApphudProfileID` and `setSuperwallProfileID` (sync web subscriptions to Apphud / Superwall)
